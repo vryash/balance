@@ -1,0 +1,26 @@
+version: '3.7'
+
+volumes:
+  postgres:
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.development
+    volumes:
+      - .:/app
+      - .bundle:/usr/local/bundle
+    ports:
+      - 3000:3000
+    command: /bin/bash -c 'rm -rf ./tmp/pids/server.pid && bundle exec rails s -b 0.0.0.0'
+    depends_on:                
+      - postgres
+    working_dir: /app
+  postgres:                    
+    image: postgres:12
+    environment:
+      POSTGRES_USER: rails
+      POSTGRES_PASSWORD: rails
+    volumes:
+      - postgres:/var/lib/postgresql/data:cached
